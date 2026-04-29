@@ -1,21 +1,18 @@
 require('dotenv').config();
 const express  = require('express');
 const mongoose = require('mongoose');
-const cors     = require('cors'); 
+const cors     = require('cors');
 const Todo     = require('./todo.model');
 
+const app  = express();
+const PORT = process.env.PORT || 3000;
 
-const app = express();
 app.use(express.json());
-app.use(cors()); 
+app.use(cors());
 
-mongoose.connect(process.env.MONGO_URL)   ← use env variable
+mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('✅ MongoDB connected!'))
   .catch(err => console.log('❌', err));
-
-/*mongoose.connect('mongodb://localhost:27017/tododb')
-  .then(() => console.log('MongoDB connected!'))
-  .catch(err => console.log('Error:', err));*/
 
 // GET all todos
 app.get('/todos', async (req, res) => {
@@ -49,7 +46,7 @@ app.post('/todos', async (req, res) => {
   }
 });
 
-// PUT — mark as complete
+// PUT — update todo
 app.put('/todos/:id', async (req, res) => {
   try {
     const todo = await Todo.findByIdAndUpdate(
@@ -73,10 +70,6 @@ app.delete('/todos/:id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-/*
-app.listen(3000, () => {
-  console.log('Todo API running at http://localhost:3000');
-});*/
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
